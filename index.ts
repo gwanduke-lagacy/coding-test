@@ -26,7 +26,13 @@ export const getResult = (items: IItem[], query: IQuery): IItem[] => {
     });
   });
 
-  // TODO: exclude 기능
+  query.exclude.forEach(excludeCond => {
+    const [key, value] = excludeCond.split(":");
+
+    filteredItems = filteredItems.filter(item => {
+      return item[key as keyof (IItem)].toString() !== value;
+    });
+  });
 
   // TODO: sort 기능
 

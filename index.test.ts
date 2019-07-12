@@ -56,6 +56,19 @@ describe("#getResult", () => {
       expect(result.length).toBe(1);
     });
   });
+
+  describe("if multiple conditions are given", () => {
+    const query: IQuery = {
+      include: ["id:1"],
+      exclude: ["title:javascript"],
+      sortBy: []
+    };
+
+    it("has no items", () => {
+      const result = getResult(items, query);
+      expect(result.length).toBe(0);
+    });
+  });
 });
 
 describe("#getResultList", () => {
