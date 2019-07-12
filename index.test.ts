@@ -12,7 +12,19 @@ const items: IItem[] = [
     id: "2",
     title: "typescript",
     type: "lang",
-    value: 2
+    value: 10
+  },
+  {
+    id: "55",
+    title: "chrome",
+    type: "browser",
+    value: 5
+  },
+  {
+    id: "3",
+    title: "firefox",
+    type: "browser",
+    value: 99
   }
 ];
 
@@ -22,21 +34,47 @@ describe("#applySort", () => {
     expect(result.length).toBe(items.length);
   });
 
-  describe("if condition is value:asc", () => {
-    const sortConds = ["value:asc"];
+  describe("if condition is title:asc", () => {
+    const sortConds = ["title:asc"];
 
-    it("items sort by value asc", () => {
+    it("items should sort by title asc", () => {
       const result = applySort(items, sortConds);
-      expect(result[0].value < result[1].value).toBeTruthy();
+      for (let i = 0; i < items.length - 1; i++) {
+        expect(result[i].title < result[i + 1].title).toBeTruthy();
+      }
     });
   });
 
-  describe("if condition is value:desc", () => {
+  describe("if condition is title:desc", () => {
+    const sortConds = ["title:desc"];
+
+    it("items should sort by title desc", () => {
+      const result = applySort(items, sortConds);
+      for (let i = 0; i < items.length - 1; i++) {
+        expect(result[i].title > result[i + 1].title).toBeTruthy();
+      }
+    });
+  });
+
+  describe("if condition is value:asc (number)", () => {
+    const sortConds = ["value:asc"];
+
+    it("items should sort by value asc", () => {
+      const result = applySort(items, sortConds);
+      for (let i = 0; i < items.length - 1; i++) {
+        expect(result[i].value < result[i + 1].value).toBeTruthy();
+      }
+    });
+  });
+
+  describe("if condition is value:desc (number)", () => {
     const sortConds = ["value:desc"];
 
-    it("items sort by value desc", () => {
+    it("items should sort by value desc", () => {
       const result = applySort(items, sortConds);
-      expect(result[0].value > result[1].value).toBeTruthy();
+      for (let i = 0; i < items.length - 1; i++) {
+        expect(result[i].value > result[i + 1].value).toBeTruthy();
+      }
     });
   });
 });
@@ -64,15 +102,15 @@ describe("#getResult", () => {
 
   describe("if include condition is given as number", () => {
     const query: IQuery = {
-      include: ["value:2"],
+      include: ["value:10"],
       exclude: [],
       sortBy: []
     };
 
-    it("result has only matched items, value === 2", () => {
+    it("result has only matched items, value === 10", () => {
       const result = getResult(items, query);
       result.forEach(item => {
-        expect(item.value).toBe(2);
+        expect(item.value).toBe(10);
       });
     });
 
