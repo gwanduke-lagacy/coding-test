@@ -34,24 +34,28 @@ describe("#applySort", () => {
     expect(result.length).toBe(items.length);
   });
 
-  describe("if condition is title:asc", () => {
-    const sortConds = ["title:asc"];
+  describe("if condition is type:asc, value:desc", () => {
+    const sortConds = ["type:asc", "value:desc"];
 
-    it("items should sort by title asc", () => {
+    it("items should sort by type asc, value desc", () => {
       const result = applySort(items, sortConds);
       for (let i = 0; i < items.length - 1; i++) {
-        expect(result[i].title < result[i + 1].title).toBeTruthy();
+        expect(result[i].type <= result[i + 1].type).toBeTruthy();
+        expect(result[0].value > result[1].value).toBeTruthy();
+        expect(result[2].value > result[3].value).toBeTruthy();
       }
     });
   });
 
-  describe("if condition is title:desc", () => {
-    const sortConds = ["title:desc"];
+  describe("if condition is type:desc, value:desc", () => {
+    const sortConds = ["type:desc", "value:desc"];
 
-    it("items should sort by title desc", () => {
+    it("items should sort by type desc, value desc", () => {
       const result = applySort(items, sortConds);
       for (let i = 0; i < items.length - 1; i++) {
-        expect(result[i].title > result[i + 1].title).toBeTruthy();
+        expect(result[i].type >= result[i + 1].type).toBeTruthy();
+        expect(result[0].value > result[1].value).toBeTruthy();
+        expect(result[2].value > result[3].value).toBeTruthy();
       }
     });
   });
