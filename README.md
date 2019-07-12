@@ -1,1 +1,4 @@
-coding-test
+```
+$ npm i
+$ npm run test
+```
