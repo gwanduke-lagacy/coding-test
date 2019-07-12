@@ -4,11 +4,13 @@ import { IItem, IQuery } from "./type";
  * key와 value를 분리하여 구조화해 반환한다.
  * @param cond key:value 형태의 조건 문자열
  */
-const condToMap = (cond: string): { key: string; value: string | number } => {
+const condToMap = (
+  cond: string
+): { key: keyof (IItem); value: string | number } => {
   const [key, value] = cond.split(":");
 
   return {
-    key,
+    key: key as keyof (IItem),
     value
   };
 };
@@ -38,6 +40,28 @@ const applyFilter = (
   });
 
   return items;
+};
+
+/**
+ * 주어진 아이템을 조건에 맞춰 정렬한다.
+ * @param items 정렬될 아이템 배열
+ * @param conds 정렬 조건 ['field:asc', 'field:desc'] 형식
+ */
+export const applySort = (items: IItem[], conds: string[]): IItem[] => {
+  const { key, value } = condToMap(conds[0]);
+
+  return items.sort((a, b) => {
+    if (a[key] === b[key]) {
+      return 0;
+    }
+
+    if (value === "asc") {
+      return a[key] < b[key] ? -1 : 1;
+    } else {
+      // value === "desc"
+      return a[key] < b[key] ? 1 : -1;
+    }
+  });
 };
 
 /**
