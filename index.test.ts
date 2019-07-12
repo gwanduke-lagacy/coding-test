@@ -12,7 +12,7 @@ const items: IItem[] = [
     id: "2",
     title: "typescript",
     type: "lang",
-    value: 1
+    value: 2
   }
 ];
 
@@ -28,6 +28,26 @@ describe("#getResult", () => {
       const result = getResult(items, query);
       result.forEach(item => {
         expect(item.id).toBe("1");
+      });
+    });
+
+    it("has only one item", () => {
+      const result = getResult(items, query);
+      expect(result.length).toBe(1);
+    });
+  });
+
+  describe("if include condition is given as number", () => {
+    const query: IQuery = {
+      include: ["value:2"],
+      exclude: [],
+      sortBy: []
+    };
+
+    it("result has only matched items, value === 2", () => {
+      const result = getResult(items, query);
+      result.forEach(item => {
+        expect(item.value).toBe(2);
       });
     });
 
