@@ -1,4 +1,4 @@
-import { getResultList, getResult } from "./index";
+import { getResultList, getResult, applySort } from "./index";
 import { IQuery, IItem } from "./type";
 
 const items: IItem[] = [
@@ -15,6 +15,31 @@ const items: IItem[] = [
     value: 2
   }
 ];
+
+describe("#applySort", () => {
+  it("does not change length of items", () => {
+    const result = applySort(items, ["value:asc"]);
+    expect(result.length).toBe(items.length);
+  });
+
+  describe("if condition is value:asc", () => {
+    const sortConds = ["value:asc"];
+
+    it("items sort by value asc", () => {
+      const result = applySort(items, sortConds);
+      expect(result[0].value < result[1].value).toBeTruthy();
+    });
+  });
+
+  describe("if condition is value:desc", () => {
+    const sortConds = ["value:desc"];
+
+    it("items sort by value desc", () => {
+      const result = applySort(items, sortConds);
+      expect(result[0].value > result[1].value).toBeTruthy();
+    });
+  });
+});
 
 describe("#getResult", () => {
   describe("if include condition is given", () => {
