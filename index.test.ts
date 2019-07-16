@@ -6,25 +6,29 @@ const items: IItem[] = [
     id: "1",
     title: "javascript",
     type: "lang",
-    value: 1
+    value: 1,
+    team: "blue"
   },
   {
     id: "2",
     title: "typescript",
     type: "lang",
-    value: 10
+    value: 10,
+    team: "blue"
   },
   {
     id: "55",
     title: "chrome",
     type: "browser",
-    value: 5
+    value: 5,
+    team: "blue"
   },
   {
     id: "3",
     title: "firefox",
     type: "browser",
-    value: 99
+    value: 99,
+    team: "blue"
   }
 ];
 

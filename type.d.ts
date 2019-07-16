@@ -3,6 +3,7 @@ export interface IItem {
   value: number;
   type: string;
   title: string;
+  team: string;
 }
 
 export interface IQuery {
