@@ -6,12 +6,12 @@ import { IItem, IQuery } from "./type";
  */
 const condToMap = (
   cond: string
-): { key: keyof (IItem); value: string | number } => {
-  const [key, value] = cond.split(":");
+): { field: keyof (IItem); order: string | number } => {
+  const [field, order] = cond.split(":");
 
   return {
-    key: key as keyof (IItem),
-    value
+    field: field as keyof (IItem),
+    order
   };
 };
 
@@ -27,14 +27,14 @@ const applyFilter = (
   conds: string[]
 ): IItem[] => {
   conds.forEach(cond => {
-    const { key, value } = condToMap(cond);
+    const { field, order } = condToMap(cond);
 
     items = items.filter(item => {
       if (type === "include") {
-        return item[key as keyof (IItem)].toString() === value;
+        return item[field as keyof (IItem)].toString() === order;
       } else {
         // type === 'exclude'
-        return item[key as keyof (IItem)].toString() !== value;
+        return item[field as keyof (IItem)].toString() !== order;
       }
     });
   });
@@ -43,24 +43,69 @@ const applyFilter = (
 };
 
 /**
+ * itemsToCompare 내용들을 or 처리하여 반환한다. 기본값은 false이다.
+ * @param itemsToCompare or 연산을 수행할 배열. 앞에서부터 순차적으로 or처리한다.
+ */
+const or = (itemsToCompare: any[] = []) => {
+  let orResult = itemsToCompare[0] || false;
+  for (let i = 1; i < itemsToCompare.length; i++) {
+    orResult = orResult || itemsToCompare[i];
+  }
+  return orResult;
+};
+
+/**
  * 주어진 아이템을 조건에 맞춰 정렬한다.
  * @param items 정렬될 아이템 배열
  * @param conds 정렬 조건 ['field:asc', 'field:desc'] 형식
  */
 export const applySort = (items: IItem[], conds: string[]): IItem[] => {
-  const { key, value } = condToMap(conds[0]);
+  // 첫번째 조건 -> 첫번째가 같다면 두번째 조건 -> 두번째가 같다면 세번째...
+
+  // sort
+  // if same => next sort
+
+  const conditions = conds.map(cond => {
+    const { field, order } = condToMap(cond);
+
+    return {
+      field,
+      order
+    };
+  });
 
   return items.sort((a, b) => {
-    if (a[key] === b[key]) {
-      return 0;
-    }
+    let sortResult = 0;
 
-    if (value === "asc") {
-      return a[key] < b[key] ? -1 : 1;
-    } else {
-      // value === "desc"
-      return a[key] < b[key] ? 1 : -1;
-    }
+    // each conds
+    conditions.forEach(cond => {
+      const valueA = a[cond.field];
+      const valueB = b[cond.field];
+
+      if (valueA === valueB) {
+        sortResult = sortResult || 0;
+      }
+
+      if (typeof valueA === "number" && typeof valueB === "number") {
+        if (cond.order === "asc") {
+          sortResult = sortResult || valueA - valueB;
+        } else {
+          // cond.order === 'desc'
+          sortResult = sortResult || valueB - valueA;
+        }
+      } else {
+        if (cond.order === "asc") {
+          sortResult =
+            sortResult || valueA.toString().localeCompare(valueB.toString());
+        } else {
+          // cond.order === 'desc'
+          sortResult =
+            sortResult || valueB.toString().localeCompare(valueA.toString());
+        }
+      }
+    });
+
+    return sortResult;
   });
 };
 
@@ -72,6 +117,7 @@ export const applySort = (items: IItem[], conds: string[]): IItem[] => {
 export const getResult = (items: IItem[], query: IQuery): IItem[] => {
   items = applyFilter(items, "include", query.include);
   items = applyFilter(items, "exclude", query.exclude);
+  items = applySort(items, query.sortBy);
 
   // TODO: sort 기능
 
