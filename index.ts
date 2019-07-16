@@ -60,11 +60,6 @@ const or = (itemsToCompare: any[] = []) => {
  * @param conds 정렬 조건 ['field:asc', 'field:desc'] 형식
  */
 export const applySort = (items: IItem[], conds: string[]): IItem[] => {
-  // 첫번째 조건 -> 첫번째가 같다면 두번째 조건 -> 두번째가 같다면 세번째...
-
-  // sort
-  // if same => next sort
-
   const conditions = conds.map(cond => {
     const { field, order } = condToMap(cond);
 
@@ -77,7 +72,6 @@ export const applySort = (items: IItem[], conds: string[]): IItem[] => {
   return items.sort((a, b) => {
     let sortResult = 0;
 
-    // each conds
     conditions.forEach(cond => {
       const valueA = a[cond.field];
       const valueB = b[cond.field];
@@ -118,8 +112,6 @@ export const getResult = (items: IItem[], query: IQuery): IItem[] => {
   items = applyFilter(items, "include", query.include);
   items = applyFilter(items, "exclude", query.exclude);
   items = applySort(items, query.sortBy);
-
-  // TODO: sort 기능
 
   return items;
 };
