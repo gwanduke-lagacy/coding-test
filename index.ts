@@ -43,18 +43,6 @@ const applyFilter = (
 };
 
 /**
- * itemsToCompare 내용들을 or 처리하여 반환한다. 기본값은 false이다.
- * @param itemsToCompare or 연산을 수행할 배열. 앞에서부터 순차적으로 or처리한다.
- */
-const or = (itemsToCompare: any[] = []) => {
-  let orResult = itemsToCompare[0] || false;
-  for (let i = 1; i < itemsToCompare.length; i++) {
-    orResult = orResult || itemsToCompare[i];
-  }
-  return orResult;
-};
-
-/**
  * 주어진 아이템을 조건에 맞춰 정렬한다.
  * @param items 정렬될 아이템 배열
  * @param conds 정렬 조건 ['field:asc', 'field:desc'] 형식
@@ -88,6 +76,7 @@ export const applySort = (items: IItem[], conds: string[]): IItem[] => {
           sortResult = sortResult || valueB - valueA;
         }
       } else {
+        // 숫자 외의 경우에는 string으로 변환하여 처리
         if (cond.order === "asc") {
           sortResult =
             sortResult || valueA.toString().localeCompare(valueB.toString());
